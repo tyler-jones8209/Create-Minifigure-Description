@@ -147,7 +147,13 @@ def get_set_appearances(driver, identifier):
         # extract set name and number using some funky shit
         set_number = set_soup[2].text.strip().split('(')[0].strip()
         set_name_unmatched = set_soup[3].text.strip()
-        set_name = re.match(r'^([^\d]+)', set_name_unmatched).group(1).strip()
+        match = re.match(r'^(.*?)(?=\d+\sPart[s]?|\d+\sMinifigure[s]?|\d+\sGear[s]?|\d{4}\*)', set_name_unmatched)
+
+        if match:
+            set_name = match.group(1).strip()
+        else:
+            set_name = set_name_unmatched.strip()  # fallback to full string
+
         sets.append(f"{set_name} - {set_number}")
 
     return sets
@@ -292,12 +298,12 @@ if __name__ == '__main__':
         print(f"Years Released: {release_year}")
     elif year_range is False:
         print(f"Year Released: {release_year}")
-    print(f"Weight: {weight}")
+    print(f"Weight: {weight}\n")
 
-    print(f"Current Prices as of {date}")
+    print(f"Current BrickLink Prices as of {date}")
     print(f"Min Price: {min_price}")
     print(f"Avg Price: {avg_price}")
-    print(f"Max Price: {max_price}")
+    print(f"Max Price: {max_price}\n")
 
     # get the list of sets the minifig appears in
     if in_sets == True:
@@ -308,6 +314,7 @@ if __name__ == '__main__':
             print(f"Appears in {len(sets)} Sets:")
         for set in sets:
             print(set)
+        print("\n")
 
     # get the list of books the minifig appears in
     if in_books == True:
